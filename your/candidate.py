@@ -378,7 +378,22 @@ class Candidate(Your):
         """
         if target == "CPU":
             range_dm = self.dm
-            dm_list = self.dm + np.linspace(-range_dm, range_dm, dmsteps)
+             
+            #making dynamic dm-time plot for better visualization of the pulse 
+            self.dedisperse()
+
+            peak_val = np.max(detrend(self.dedispersed)) #getting the peak value of the timeseries
+            width = self.width
+            k =  ( 4148808.0 * (1 / int(np.min(self.chan_freqs)) ** 2 - 1 / int(np.max(self.chan_freqs)) ** 2) / 1000 ) * 1000 
+            threshold = 0.9 * self.dm
+            delta_dm = ( peak_val * width ) / k
+
+            #print(f"peak_val = {peak_val} , dm = {self.dm} , delta_dm = {delta_dm}")
+            if delta_dm <= threshold:
+                dm_list = self.dm + np.linspace(-delta_dm / 2 , delta_dm / 2 , dmsteps)
+            else:
+                dm_list = self.dm + np.linspace(-range_dm, range_dm, dmsteps)
+
             self.dmt = np.zeros((dmsteps, self.data.shape[0]), dtype=np.float32)
             for ii, dm in enumerate(dm_list):
                 self.dmt[ii, :] = self.dedispersets(dms=dm)
