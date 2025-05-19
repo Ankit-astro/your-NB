@@ -109,10 +109,27 @@ def plot_h5(
             interpolation="none",
         )
         ax2.set_ylabel("Frequency (MHz)")
+        #dynamic dm range for dm-time image
+        peak_val = np.max(detrend(normalise(np.array(f["data_freq_time"]))[:, ::-1].T).sum(0))
+        width_samp = width
+        threshold = 0.9 * dm
+        k = 4.148808 * ( (1 / (fch1 + (nchan * foff))**2) - (1 / (fch1)**2) ) * 1000000
+
+        delta_dm = (peak_val * width_samp ) / k 
+        print(f"peak_val = {peak_val} , dm = {dm} , delta_dm = {delta_dm}")
+            
+        if delta_dm <= threshold :
+            dm_lower = dm - delta_dm / 2
+            dm_upper = dm + delta_dm / 2
+        else: #original dm range 0 - 2*dm
+            dm_lower = 0
+            dm_upper = 2 * dm
+            
+        #print(f"\ndm_low = {dm_lower} \ndm_high = {dm_upper}")
         ax3.imshow(
             dm_time,
             aspect="auto",
-            extent=[ts[0], ts[-1], 2 * dm, 0],
+            extent=[ts[0], ts[-1], dm_upper, dm_lower],
             interpolation="none",
         )
         ax3.set_ylabel(r"DM (pc cm$^{-3}$)")
