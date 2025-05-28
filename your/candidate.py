@@ -114,10 +114,17 @@ class Candidate(Your):
             # Copy over header information as attributes
             file_header = vars(self.your_header)
             for key in file_header.keys():
-                if key == "dtype":
-                    f.attrs[key] = np.dtype(file_header[key]).name
-                else:
-                    f.attrs[key] = file_header[key]
+                value = file_header[key]
+                try:
+                    if key == "dtype":
+                        f.attrs[key] = np.dtype(value).name
+                    else:
+                        # Try to assign the attribute directly
+                        f.attrs[key] = value
+                except TypeError:
+                    # If it's not HDF5-compatible, store its string representation
+                    f.attrs[key] = str(value)
+
 
             f.attrs["tsamp"] = self.your_header.tsamp
             f.attrs["nchans"] = self.your_header.nchans
