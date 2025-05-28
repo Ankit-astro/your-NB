@@ -4,14 +4,14 @@ import argparse
 import glob
 import logging
 import os
-
+from rich.progress import Progress
 from rich.logging import RichHandler
-
+from functools import partial
 from your.utils.math import normalise
 
-os.environ["OPENBLAS_NUM_THREADS"] = (
-    "1"  # stop numpy multithreading regardless of the backend
-)
+os.environ[
+    "OPENBLAS_NUM_THREADS"
+] = "1"  # stop numpy multithreading regardless of the backend
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 
@@ -35,10 +35,12 @@ def cpu_dedisp_dmt(cand, args):
         time_decimate_factor = 1
     else:
         time_decimate_factor = pulse_width // 2
+
     logger.debug(f"Time decimation factor {time_decimate_factor}")
 
     cand.dmtime()
     logger.info("Made DMT")
+    
     if args.opt_dm:
         logger.info("Optimising DM")
         logger.warning("This feature is experimental!")
@@ -90,7 +92,7 @@ def cand2h5(cand_val):
     ) = cand_val
     if os.path.exists(str(kill_mask_path)):
         logger.info(f"Using mask {kill_mask_path}")
-        kill_chans = np.loadtxt(kill_mask_path, dtype=np.int32)
+        kill_chans = np.loadtxt(kill_mask_path, dtype=int)
     else:
         logger.debug("No Kill Mask")
 
@@ -322,7 +324,7 @@ if __name__ == "__main__":
     cand_pars = pd.read_csv(values.cand_param_file)
     # Randomly shuffle the candidates, this is so that the high DM candidates are spread through out
     # Else they will clog the GPU memory at once
-    cand_pars.sample(frac=1).reset_index(drop=True)
+    cand_pars = cand_pars.sample(frac=1).reset_index(drop=True)
     process_list = []
     for index, row in cand_pars.iterrows():
         if len(values.gpu_id) > 1:
@@ -345,5 +347,8 @@ if __name__ == "__main__":
             ]
         )
 
-    with Pool(processes=values.nproc) as pool:
-        pool.map(cand2h5, process_list, chunksize=1)
+    with Progress() as progress:
+        task = progress.add_task("[cyan]Processing candidates...", total=len(process_list))
+        with Pool(processes=values.nproc) as pool:
+            for _ in pool.imap_unordered(cand2h5, process_list, chunksize=1):
+                progress.update(task, advance=1)
