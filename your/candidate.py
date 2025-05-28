@@ -2,7 +2,7 @@
 
 import h5py
 from scipy.optimize import golden
-scipy.signal import detrend
+from scipy.signal import detrend
 
 from your import Your
 from your.utils.gpu import gpu_dedisperse, gpu_dmt
