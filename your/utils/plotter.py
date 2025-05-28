@@ -10,8 +10,9 @@ import numpy as np
 import pylab as plt
 from matplotlib import gridspec
 from scipy.signal import detrend
-
+from your.utils.math import normalise
 from your.utils.math import smad_plotter
+
 
 
 def plot_h5(
@@ -20,7 +21,6 @@ def plot_h5(
     detrend_ft=True,
     publication=False,
     mad_filter=False,
-    dpi=300,
     outdir=None,
 ):
     """
@@ -32,7 +32,6 @@ def plot_h5(
         save (bool): Save the file as a png
         detrend_ft (bool): detrend the frequency time plot
         publication (bool): make publication quality plot
-        dpi (int): DPI of output png (default: 300)
         outdir (str): Path to the save the files into.
 
     Returns:
@@ -116,16 +115,14 @@ def plot_h5(
         k = 4.148808 * ( (1 / (fch1 + (nchan * foff))**2) - (1 / (fch1)**2) ) * 1000000
 
         delta_dm = (peak_val * width_samp ) / k 
-        print(f"peak_val = {peak_val} , dm = {dm} , delta_dm = {delta_dm}")
-            
+
         if delta_dm <= threshold :
             dm_lower = dm - delta_dm / 2
             dm_upper = dm + delta_dm / 2
         else: #original dm range 0 - 2*dm
             dm_lower = 0
             dm_upper = 2 * dm
-            
-        #print(f"\ndm_low = {dm_lower} \ndm_high = {dm_upper}")
+
         ax3.imshow(
             dm_time,
             aspect="auto",
@@ -141,7 +138,7 @@ def plot_h5(
                 filename = outdir + os.path.basename(h5_file)[:-3] + ".png"
             else:
                 filename = h5_file[:-3] + ".png"
-            plt.savefig(filename, bbox_inches="tight", dpi=dpi)
+            plt.savefig(filename, bbox_inches="tight", dpi=300)
         else:
             plt.close()
 
