@@ -7,6 +7,8 @@ This repository contains a **modified version of the [`your`](https://github.com
 
 To identify Narrowband pulses correctly , we have implimented a dynamic DM range in the DM-time plot to see the bow-tie structure clearly.
 
+Without dynamic DM range ![Before](examples/before.pdf)
+With dynamic DM range ![After](examples/after.pdf)
 ## Installation 
 ```bash
 git clone https://github.com/thepetabyteproject/your.git
