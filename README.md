@@ -11,8 +11,8 @@ Without dynamic DM range ![Before](examples/before.pdf) ,
 With dynamic DM range ![After](examples/after.pdf)
 ## Installation 
 ```bash
-git clone https://github.com/thepetabyteproject/your.git
-cd your
+git clone https://github.com/Ankit-astro/your-NB.git
+cd your-NB
 pip install -r requirements.txt
 python setup.py install
 ``` 
