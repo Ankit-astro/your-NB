@@ -108,9 +108,10 @@ def plot_h5(
             interpolation="none",
         )
         ax2.set_ylabel("Frequency (MHz)")
+
         #dynamic dm range for dm-time image
         peak_val = np.max(detrend(normalise(np.array(f["data_freq_time"]))[:, ::-1].T).sum(0))
-        width_samp = width
+        width_samp = width * tsamp * 1000 
         threshold = 0.9 * dm
         k = 4.148808 * ( (1 / (fch1 + (nchan * foff))**2) - (1 / (fch1)**2) ) * 1000000
 
