@@ -363,7 +363,7 @@ class Candidate(Your):
                 * dms
                 * (1 / (self.chan_freqs[0]) ** 2 - 1 / (self.chan_freqs) ** 2)
                 / 1000
-            )
+            ) # delay in ms
             delay_bins = np.round(delay_time / self.native_tsamp).astype("int64")
             ts = np.zeros(nt, dtype=np.float32)
             for ii in range(nf):
@@ -391,7 +391,7 @@ class Candidate(Your):
         self.dedisperse()
 
         peak_val = np.max(detrend(self.dedispersed)) #getting the peak value of the timeseries
-        width = self.width * self.native_tsamp * 1000 #getting the width of the pulse in ms
+        width = self.width * self.native_tsamp  #getting the width of the pulse in s
         k =  ( 4148808.0 * (1 / int(np.min(self.chan_freqs)) ** 2 - 1 / int(np.max(self.chan_freqs)) ** 2) / 1000 ) * 1000 
         threshold = 0.9 * self.dm
         delta_dm = ( peak_val * width ) / k
