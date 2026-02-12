@@ -392,7 +392,7 @@ class Candidate(Your):
 
         peak_val = np.max(detrend(self.dedispersed)) #getting the peak value of the timeseries
         width = self.width * self.native_tsamp * 1000 #getting the width of the pulse in ms
-        k =  ( 4148808.0 * (1 / int(np.min(self.chan_freqs)) ** 2 - 1 / int(np.max(self.chan_freqs)) ** 2) / 1000 ) * 1000 
+        k =  ( 4.1488080 * (1 / int(np.min(self.chan_freqs)) ** 2 - 1 / int(np.max(self.chan_freqs)) ** 2) ) * 1000000 #delay in ms 
         threshold = 0.9 * self.dm
         delta_dm = ( peak_val * width ) / k
 

@@ -113,7 +113,7 @@ def plot_h5(
         peak_val = np.max(detrend(normalise(np.array(f["data_freq_time"]))[:, ::-1].T).sum(0))
         width_samp = width * tsamp * 1000 #width in ms
         threshold = 0.9 * dm
-        k = ( 4148808.0 * ( (1 / (fch1 + (nchan * foff))**2) - (1 / (fch1)**2) ) / 1000 ) *   1000
+        k = ( 4.1488080 * ( (1 / (fch1 + (nchan * foff))**2) - (1 / (fch1)**2) ) ) *   1000000 #delay in ms
 
         delta_dm = (peak_val * width_samp ) / k 
 
