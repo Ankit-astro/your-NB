@@ -14,7 +14,7 @@ With dynamic DM range ![After](examples/after.pdf)
 git clone https://github.com/Ankit-astro/your-NB.git
 cd your-NB
 pip install -r requirements.txt
-python setup.py install
+pip install -e .
 ``` 
 ## Usages
 
